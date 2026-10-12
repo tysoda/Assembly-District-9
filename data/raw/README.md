@@ -19,7 +19,7 @@ Elections are coded `p` (primary) or `g` (general) plus a two-digit year: p22, g
 | Type | Elections | SWDB name | Status |
 |---|---|---|---|
 | `sov` | p16 g16 p18 g18 p20 g20 p22 g22 p24 g24 | statement of vote by SR precinct | **Done** (below). Add p26 when posted |
-| `reg` | same | registration by SR precinct | Needed: the statewide SOV files carry no party registration |
+| `reg` | same | registration by SR precinct | **Done**: `ad9_{e}_reg.csv`, `c5_{e}_reg.csv` |
 | `blk_map` | p16 g16 p18 g18 p20 g20 | SR precinct to census block | **Done** (2010 blocks) |
 | relationship | once | Census 2010-to-2020 tabulation block relationship file, CA | **Done**: `c5_tab2010_tab2020.csv` |
 | ~~`ad21_blocks.csv`~~ | — | 2021 Assembly district block assignment | Covered by `ad9_p24_sr_blk_map.csv` |
@@ -87,12 +87,26 @@ president 38.0% D two-party, both matching. 2020 has no published current-line f
 \* Primary: all Democratic vs all Republican candidates (2016 primary inflated by the contested Democratic race).
 US Senate generals in 2016 and 2018 were Democrat vs Democrat.
 
-### Older block maps and registration (five counties)
+### Registration on current AD9 lines
+
+`python scripts/build_registration.py <statewide reg files>` writes `c5_{e}_reg.csv` (five counties, raw) and
+`ad9_{e}_reg.csv`: 2022+ by precinct key; before 2022 scaled by `AD9_SHARE` (run `rebuild_old_lines.py` first).
+Totals agree with the results files' `TOTREG` to within 1% in every election. A few 2022+ results precincts
+(5–31 per election) have no registration row; they're precincts with no registered voters.
+
+| | p16 | g16 | p18 | g18 | p20 | g20 | p22 | g22 | p24 | g24 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Dem | 32.3% | 32.5% | 32.0% | 31.2% | 31.9% | 32.1% | 32.9% | 33.0% | 32.6% | 31.6% |
+| Rep | 44.3% | 43.0% | 41.7% | 40.4% | 41.4% | 41.5% | 40.4% | 40.2% | 41.4% | 42.0% |
+| No party preference | 18.5% | 19.4% | 20.8% | 22.8% | 20.3% | 19.6% | 18.9% | 18.8% | 17.8% | 18.3% |
+| Other parties | 4.9% | 5.1% | 5.5% | 5.5% | 6.5% | 6.9% | 7.8% | 8.0% | 8.2% | 8.2% |
+| Hispanic surname | 21.1% | 22.1% | 23.1% | 23.5% | 24.0% | 25.0% | 26.2% | 26.5% | 26.8% | 27.4% |
+
+### Older block maps (five counties)
 
 * `c5_{p16,g16,p18,g18,p20,g20}_sr_blk_map.csv`: SWDB precinct-to-block maps, five AD9 counties only. **These use 2010
   census blocks**, so they can't be joined straight to `ad9_p24_sr_blk_map.csv` (2020 blocks). They need the
   Census 2010-to-2020 block relationship file for California, or SWDB's `GeoConv_SRPREC_BLOCK20` versions.
-* `c5_p20_reg.csv`: p20 registration by SR precinct, five AD9 counties (1,458,120 registered).
 
 ### Copied from Stanislaus-County-District-1
 
