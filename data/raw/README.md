@@ -24,7 +24,32 @@ Elections are coded `p` (primary) or `g` (general) plus a two-digit year: p22, g
 | `blk_map` | g16 g18 p20 g20 | SR precinct to 2020 census block conversion | |
 | `ad21_blocks.csv` | once | 2021 Assembly district block assignment | Places 2020 blocks in the current AD9 |
 
-## Already here (copied from Stanislaus-County-District-1)
+## Already here
+
+### AD9 statement of vote, filtered from the statewide SWDB files
+
+`ad9_p22_sov.csv`, `ad9_g22_sov.csv`, `ad9_p24_sov.csv`, `ad9_g24_sov.csv`: rows with `ADDIST == 9`, with all-zero
+contest columns dropped. `COUNTY` is SWDB's county sequence number (3 Amador, 5 Calaveras, 34 Sacramento,
+39 San Joaquin, 50 Stanislaus), not FIPS.
+
+* **Precinct keys differ:** p22, g22 and g24 use `SVPREC` (voting precincts); p24 uses `SRPREC`. Fine for district
+  totals and per-election leans, but don't join across them without SWDB's SV-to-SR conversion.
+* **Suppressed cells:** SWDB masks contest votes as `***` in very small precincts (g24: 50 rows, 223 ballots;
+  p24: 4 rows, 17 ballots). These are blank in the filtered files.
+* **No party registration:** `DEMREG`/`REPREG` are zero in these statewide files, so party registration needs the
+  registration-by-precinct files.
+
+| | p22 | g22 | p24 | g24 |
+|---|---|---|---|---|
+| Registered | 264,628 | 265,584 | 262,973 | 270,387 |
+| Ballots cast | 92,665 | 145,448 | 103,752 | 205,545 |
+| Turnout | 35.0% | 54.8% | 39.5% | 76.0% |
+| Assembly | Flora (R) 65,647, unopposed | Flora 96,990, Dem 43,109 | Flora 65,939, AIP 21,945 | Flora 129,107, AIP 55,133 |
+| Top of ticket, D two-party | Gov 36.9%\* | Gov 34.4% | Pres 33.8%\* | Pres 38.0% |
+
+\* Primary: all Democratic vs all Republican candidates combined.
+
+### Copied from Stanislaus-County-District-1
 
 `c099_p20_sov.csv`, `c099_g20_sov.csv`, `c099_g22_sov.csv`, `c099_g24_sov.csv`, `c099_g22_reg.csv`,
 `c099_g22_sr_blk_map.csv`, `c099_g24_sr_blk_map.csv`, `county_099_g20_GeoConv_SRPREC_BLOCK20.csv`
