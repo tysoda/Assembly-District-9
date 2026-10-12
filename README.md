@@ -11,6 +11,21 @@ Data collection and analysis for California Assembly District 9 (Amador, Calaver
 
 Each Optiq run writes `raw_<UTC>.json` (untouched) and `flat_<UTC>.csv` (one row per record, with `snapshot_utc`). To trigger a run by hand, open **Actions → Optiq AD9 snapshot → Run workflow**.
 
+## Streamlit app
+
+```
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+Tabs: **2026 general** (Adams vs Flora: win probability, share distribution, votes short), **2028 open seat**
+(primary lockout risk by field size, the general when it's D vs R, optionally only where Flora wins in 2026),
+**History** (AD9 lean vs the state, registration by party and Hispanic surname), **Model components** (state
+environment specs and their walk-forward errors, lean methods, Flora's edge, turnout), **Block groups** (the targeting
+table with a lean-change vs Hispanic-share chart, CSV download), **Ballot returns** (latest Optiq snapshot: cumulative
+return rate by party). The sidebar overrides config.json for the session. Deploys to Streamlit Community Cloud like
+the SD4 app: point it at `app.py` (Python 3.11 is pinned in `runtime.txt`).
+
 ## Forecast model: November 2026 and the 2028 open seat
 
 ```

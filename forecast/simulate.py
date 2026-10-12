@@ -20,7 +20,7 @@ def _q(a, ps=(10, 50, 90)):
     return {f"p{p}": float(np.percentile(a, p)) for p in ps}
 
 
-def run(cfg: dict, comp: dict) -> dict:
+def run(cfg: dict, comp: dict, return_draws: bool = False) -> dict:
     sc = cfg["scenario"]
     n, rng = int(sc["n_sims"]), np.random.default_rng(sc["seed"])
     N = lambda m, s: rng.normal(m, s, n) if s > 0 else np.full(n, float(m))
@@ -115,6 +115,8 @@ def run(cfg: dict, comp: dict) -> dict:
             "votes_to_win_median": float(np.median(votes28) / 2),
         },
         "lockout_by_field": lockout_table(rng, d_pri, a),
+        **({"draws": {"adams": adams, "flora_wins": flora_wins, "dem_primary": d_pri, "dem_in_top_two": dem_in,
+                      "dem28": dem28, "dem_vs_rep": dem_in & ~both_dem}} if return_draws else {}),
     }
 
 
