@@ -22,7 +22,7 @@ Elections are coded `p` (primary) or `g` (general) plus a two-digit year: p22, g
 | `reg` | same | registration by SR precinct | |
 | `sov`, `reg` | g16 g18 p20 g20 | same, older elections | Old district lines: `addist` shows 12/21 etc., so these go through the block files below |
 | `blk_map` | g16 g18 p20 g20 | SR precinct to 2020 census block conversion | |
-| `ad21_blocks.csv` | once | 2021 Assembly district block assignment | Places 2020 blocks in the current AD9 |
+| ~~`ad21_blocks.csv`~~ | — | 2021 Assembly district block assignment | Covered by `ad9_p24_sr_blk_map.csv` (below) |
 
 ## Already here
 
@@ -48,6 +48,18 @@ contest columns dropped. `COUNTY` is SWDB's county sequence number (3 Amador, 5 
 | Top of ticket, D two-party | Gov 36.9%\* | Gov 34.4% | Pres 33.8%\* | Pres 38.0% |
 
 \* Primary: all Democratic vs all Republican candidates combined.
+
+### AD9 census blocks (p24)
+
+`ad9_p24_sr_blk_map.csv`: SWDB's statewide p24 precinct-to-block map, limited to blocks in AD9 precincts
+(matched to `ad9_p24_sov.csv` on `SRPREC_KEY`). It holds 6,655 blocks and 261,808 registered voters, 99.6% of AD9's
+p24 registration. SR precincts nest inside districts, so this list stands in for the 2021 Assembly block
+assignment wherever voters live. Blocks with no registered voters are missing, which doesn't matter for
+registration-weighted work. 51 blocks are split between AD9 and a neighbouring district; `PCTBLK` gives each
+part's share.
+
+Joined to the CVAP file (registration-weighted), AD9's citizen voting-age population (2015–19) is about 297,000:
+27.7% Hispanic, 60.9% non-Hispanic white, 5.8% Asian, 2.4% Black.
 
 ### Copied from Stanislaus-County-District-1
 
