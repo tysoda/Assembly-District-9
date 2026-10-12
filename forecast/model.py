@@ -52,33 +52,47 @@ def state_env_table(sd4_dir: Path) -> pd.DataFrame:
         return m.d2p.iloc[0] if len(m) else np.nan
     df["d2p"] = df.apply(two_party, axis=1)
     df["target"] = df.d2p.fillna(df.dem_share)      # rows without SWDB totals (2026 primary) keep SD4's value
+    # president's party during the campaign: +1 Democratic, -1 Republican
+    df["dem_pres"] = df.yr.map(lambda y: 1 if y in (2012, 2014, 2016, 2022, 2024) else -1)
+    df["signed_approval"] = (df.approval - 0.5) * df.dem_pres   # > 0 helps Democrats
     return df
 
 
-SPECS = {"sd4": ["presidential", "inflation", "approval"], "mean": ["presidential"]}
+SPECS = {
+    "sd4": ["presidential", "inflation", "approval"],      # SD4 as-is: approval not signed by party
+    "signed": ["presidential", "signed_approval"],         # approval signed by the president's party
+    "mean": ["presidential"],
+}
 
 
 def state_environment(sd4_dir: Path, spec: str) -> dict:
     df = state_env_table(sd4_dir)
     out = {}
     for name, feats in SPECS.items():
-        errs = []
+        errs, errs20 = [], []
         for yr in sorted(df.loc[df.yr >= 2016, "yr"].unique()):
             tr, te = df[df.yr < yr], df[df.yr == yr]
             c = _ols(np.column_stack([np.ones(len(tr)), tr[feats]]), tr.target.values)
-            errs.extend(te.target.values - (c[0] + te[feats].values @ c[1:]))
+            e = list(te.target.values - (c[0] + te[feats].values @ c[1:]))
+            errs.extend(e)
+            if yr >= 2020:          # training includes a Republican-president year
+                errs20.extend(e)
         c = _ols(np.column_stack([np.ones(len(df)), df[feats]]), df.target.values)
         out[name] = {"features": feats, "coefficients": dict(zip(["intercept"] + feats, c.tolist())),
                      "walk_forward_sd": float(np.std(errs, ddof=1)),
-                     "walk_forward_mae": float(np.mean(np.abs(errs))), "n_obs": len(df)}
+                     "walk_forward_mae": float(np.mean(np.abs(errs))),
+                     "walk_forward_mae_from_2020": float(np.mean(np.abs(errs20))),
+                     "walk_forward_sd_from_2020": float(np.std(errs20, ddof=1)), "n_obs": len(df)}
     out["chosen"] = spec
     return out
 
 
-def predict_state(env: dict, presidential: int, inflation, approval) -> np.ndarray:
+def predict_state(env: dict, presidential: int, inflation, approval, dem_pres: int = -1) -> np.ndarray:
     s = env[env["chosen"]]
     c = s["coefficients"]
-    x = {"presidential": presidential, "inflation": np.asarray(inflation), "approval": np.asarray(approval)}
+    approval = np.asarray(approval)
+    x = {"presidential": presidential, "inflation": np.asarray(inflation), "approval": approval,
+         "signed_approval": (approval - 0.5) * dem_pres}
     return c["intercept"] + sum(c[f] * x[f] for f in s["features"])
 
 

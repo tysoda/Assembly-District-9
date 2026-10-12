@@ -27,6 +27,8 @@ def apply_overrides(cfg: dict, pairs: list[str]) -> None:
         k, v = pair.split("=", 1)
         if k == "state_spec":
             cfg["state_env"]["spec"] = v
+        elif k == "state_sd_from":
+            cfg["state_env"]["sd_from"] = int(v)
         elif k in ("lean_general", "lean_primary"):
             cfg["lean"][k.split("_")[1] + "_method"] = v
         elif k in ("inflation", "approval"):
@@ -129,10 +131,11 @@ def report(c: dict, r: dict) -> None:
     rng = lambda d: f"{pct(d['p50'])} [{pct(d['p10'])}–{pct(d['p90'])}]"
     se = c["state_env"]
     print("\nAD9 forecast\n" + "=" * 60)
-    for k in ("sd4", "mean"):
+    for k in ("sd4", "signed", "mean"):
         s = se[k]
-        print(f"State env '{k}'{' (used)' if se['chosen'] == k else ''}: walk-forward MAE {pct(s['walk_forward_mae'])}, "
-              f"sd {pct(s['walk_forward_sd'])}")
+        print(f"State env '{k}'{' (used)' if se['chosen'] == k else ''}: walk-forward MAE {pct(s['walk_forward_mae'])} "
+              f"from 2016, {pct(s['walk_forward_mae_from_2020'])} from 2020; "
+              f"sd {pct(s['walk_forward_sd'])} / {pct(s['walk_forward_sd_from_2020'])}")
     for key in ("general", "primary"):
         L = c[f"lean_{key}"]
         mae = {k: round(v["mae"], 4) for k, v in L["validation"].items()}

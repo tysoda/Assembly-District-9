@@ -30,7 +30,10 @@ def run(cfg: dict, comp: dict) -> dict:
     def state(year_cfg, presidential):
         infl = N(*year_cfg["inflation"])
         appr = np.clip(N(*year_cfg["approval"]), 0.2, 0.7)
-        return predict_state(env, presidential, infl, appr) + N(0, env[env["chosen"]]["walk_forward_sd"])
+        dem_pres = 1 if year_cfg.get("president_party", "R") == "D" else -1
+        e = env[env["chosen"]]
+        sd = e["walk_forward_sd_from_2020"] if cfg["state_env"].get("sd_from", 2016) == 2020 else e["walk_forward_sd"]
+        return predict_state(env, presidential, infl, appr, dem_pres) + N(0, sd)
 
     # ── 2026 ────────────────────────────────────────────────────────────────
     st26 = state(cfg["state_env"]["2026"], 0)

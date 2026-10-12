@@ -33,7 +33,7 @@
   },
   "output": "output/ad9_forecast.json",
   "state_env": {
-    "_note": "spec 'sd4' = SD4's presidential+inflation+approval regression; 'mean' = presidential flag only (validates better, see output). Both refit on two-party shares. Inputs are [mean, sd].",
+    "_note": "spec: 'sd4' = SD4's presidential+inflation+approval (approval unsigned); 'signed' = presidential + approval signed by the president's party ((approval-0.5) x +1 Dem / -1 Rep president); 'mean' = presidential flag only. All refit on two-party shares. Inputs are [mean, sd].",
     "spec": "sd4",
     "2026": {
       "inflation": [
@@ -44,7 +44,8 @@
         0.39,
         0.02
       ],
-      "_source": "SD4 forecast_params.json context, Oct 2026"
+      "_source": "SD4 forecast_params.json context, Oct 2026",
+      "president_party": "R"
     },
     "2028": {
       "inflation": [
@@ -55,8 +56,11 @@
         0.42,
         0.05
       ],
-      "_source": "D1 config defaults"
-    }
+      "_source": "D1 config defaults",
+      "president_party": "R"
+    },
+    "sd_from": 2016,
+    "_sd_note": "sd_from: walk-forward window for the state env uncertainty. 2016 = SD4 convention; 2020 = first year whose training data includes a Republican president (the only fair test of 'signed')."
   },
   "lean": {
     "_note": "auto = lowest walk-forward MAE on the elections all methods can predict",
