@@ -20,7 +20,8 @@ Elections are coded `p` (primary) or `g` (general) plus a two-digit year: p22, g
 |---|---|---|---|
 | `sov` | p16 g16 p18 g18 p20 g20 p22 g22 p24 g24 | statement of vote by SR precinct | **Done** (below). Add p26 when posted |
 | `reg` | same | registration by SR precinct | Needed: the statewide SOV files carry no party registration |
-| `blk_map` | p16 g16 p18 g18 p20 g20 | SR precinct to 2020 census block conversion | Needed for Amador, Calaveras, Sacramento, San Joaquin (Stanislaus g20 is here) |
+| `blk_map` | p16 g16 p18 g18 p20 g20 | SR precinct to census block | **Done** (2010 blocks) |
+| relationship | once | Census 2010-to-2020 tabulation block relationship file, CA | **Done**: `c5_tab2010_tab2020.csv` |
 | ~~`ad21_blocks.csv`~~ | — | 2021 Assembly district block assignment | Covered by `ad9_p24_sr_blk_map.csv` |
 
 ## Already here
@@ -64,6 +65,27 @@ part's share.
 
 Joined to the CVAP file (registration-weighted), AD9's citizen voting-age population (2015–19) is about 297,000:
 27.7% Hispanic, 60.9% non-Hispanic white, 5.8% Asian, 2.4% Black.
+
+### 2016–2020 on current AD9 lines
+
+`python scripts/rebuild_old_lines.py` writes `ad9_{p16,g16,p18,g18,p20,g20}_sov.csv` (every count column multiplied
+by the precinct's AD9 share; `AD9_SHARE` column added) and `ad9_{e}_precinct_share.csv`. The chain, all weighted by
+registered voters: 2020 block → AD9 (p24 block map + p24 precinct districts, `c5_p24_sr_blk_map.csv`), then 2010 block
+→ 2020 blocks (Census relationship file, pieces weighted by p24 registrants × land-area share), then old precinct →
+2010 blocks (that election's block map). Unmatched blocks hold under 25 voters per election.
+
+Precincts split by the new line get fractional votes, so totals are estimates near the edges (60–95 precincts per
+election are partly in AD9). Validation against published current-line figures: g22 governor 34.4% D and g24
+president 38.0% D two-party, both matching. 2020 has no published current-line figure to check against.
+
+| | p16 | g16 | p18 | g18 | p20 | g20 | p22 | g22 | p24 | g24 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Registered (k) | 202 | 218 | 217 | 225 | 227 | 251 | 265 | 266 | 263 | 270 |
+| Turnout | 46.6% | 76.8% | 40.8% | 66.4% | 51.2% | 84.0% | 35.0% | 54.8% | 39.5% | 76.0% |
+| D two-party, top of ticket | Pres 46.5%\* | Pres 41.7% | Gov 40.0%\* | Gov 38.6% | Pres 43.6%\* | Pres 42.8% | Gov 36.9%\* | Gov 34.4% | Pres 33.8%\* | Pres 38.0% |
+
+\* Primary: all Democratic vs all Republican candidates (2016 primary inflated by the contested Democratic race).
+US Senate generals in 2016 and 2018 were Democrat vs Democrat.
 
 ### Older block maps and registration (five counties)
 
