@@ -6,10 +6,10 @@ Data collection and analysis for California Assembly District 9 (Amador, Calaver
 
 | Source | What | How | Where |
 |---|---|---|---|
-| Optiq (`abev.optiqdata.com`) | Ballot returns by party, age, gender, ethnicity and return date | GitHub Action `optiq_ad9.yml`, daily plus every 3 hours in election week | `data/optiq_ad9/` |
+| Optiq (`abev.optiqdata.com`) | Ballot returns by party, age, gender, ethnicity and return date (district); registered and returned by party for each county | GitHub Action `optiq_ad9.yml`, daily plus every 3 hours in election week | `data/optiq_ad9/` |
 | CA SOS results API, county registrars, SOS unprocessed ballots | Results and ballots-received counts | Claude scheduled tasks | Google Drive folder "AD9 2026 Snapshots" |
 
-Each Optiq run writes `raw_<UTC>.json` (untouched) and `flat_<UTC>.csv` (one row per record, with `snapshot_utc`). To trigger a run by hand, open **Actions → Optiq AD9 snapshot → Run workflow**.
+Each Optiq run writes `raw_<UTC>.json` (untouched) and `flat_<UTC>.csv` (one row per record, with `snapshot_utc`) for the district, and `raw_county_<UTC>.json` / `county_<UTC>.csv` for the county breakdown. The county endpoint has no per-day detail, so these snapshots are its only time series. To trigger a run by hand, open **Actions → Optiq AD9 snapshot → Run workflow**.
 
 ## Streamlit app
 

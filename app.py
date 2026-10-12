@@ -351,3 +351,46 @@ with tabs[5]:
         with st.expander("Table"):
             st.dataframe(by_day.pivot(index="returnDate", columns="party", values="cumulative").fillna(0)
                          .astype(int), width="stretch")
+
+    # ── by county (geography-breakdown endpoint; one row per county per snapshot) ──
+    st.markdown("#### By county")
+    csnaps = sorted((ROOT / "data/optiq_ad9").glob("county_*.csv"))
+    if not csnaps:
+        st.info("No county snapshots yet. The next run of the Optiq Action adds them (data/optiq_ad9/county_*.csv).")
+    else:
+        cty = pd.concat([pd.read_csv(f) for f in csnaps], ignore_index=True)
+        cty["snapshot"] = pd.to_datetime(cty.snapshot_utc, format="%Y-%m-%dT%H%MZ", utc=True).dt.tz_convert(
+            "America/Los_Angeles")
+        cty["county"] = cty.geography.str.title()
+        for p in ("total", "dem", "rep", "npp"):
+            cty[f"{p}_rate"] = cty[f"{p}Returned"] / cty[f"{p}Registered"]
+        latest = cty[cty.snapshot_utc == cty.snapshot_utc.max()].sort_values("totalRegistered", ascending=False)
+        tbl = pd.DataFrame({
+            "County": latest.county, "Registered": latest.totalRegistered, "Returned": latest.totalReturned,
+            "Return rate": latest.total_rate, "Dem rate": latest.dem_rate, "Rep rate": latest.rep_rate,
+            "NPP rate": latest.npp_rate,
+            "Dem share of returns": latest.demReturned / latest.totalReturned,
+            "Rep share of returns": latest.repReturned / latest.totalReturned,
+            "Latest return date": latest.latestReturnDate})
+        st.dataframe(tbl.style.format({"Registered": "{:,.0f}", "Returned": "{:,.0f}",
+                                       **{c: "{:.1%}" for c in ["Return rate", "Dem rate", "Rep rate", "NPP rate",
+                                                                "Dem share of returns", "Rep share of returns"]}},
+                                      na_rep="—"), hide_index=True, width="stretch")
+        st.caption(f"Latest county snapshot {latest.snapshot_utc.iloc[0]} (UTC). Registered = voters in the AD9 part "
+                   "of each county.")
+        if cty.snapshot_utc.nunique() > 1:
+            order = latest.county.tolist()
+            cpal = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"]   # categorical slots 1–5, validated
+            cb = alt.Chart(cty).encode(
+                x=alt.X("snapshot:T", title=None),
+                y=alt.Y("total_rate:Q", title="Return rate", axis=alt.Axis(format=".0%")),
+                color=alt.Color("county:N", scale=alt.Scale(domain=order, range=cpal[:len(order)]),
+                                legend=alt.Legend(orient="top", title=None)),
+                tooltip=["county:N", alt.Tooltip("snapshot:T", format="%b %d %H:%M"),
+                         alt.Tooltip("totalReturned:Q", format=",.0f", title="Returned"),
+                         alt.Tooltip("total_rate:Q", format=".1%", title="Rate")])
+            last = cty[cty.snapshot_utc == cty.snapshot_utc.max()]
+            clab = alt.Chart(last).mark_text(align="left", dx=6, fontSize=11, color="#0b0b0b").encode(
+                x="snapshot:T", y="total_rate:Q", text="county:N")
+            st.altair_chart((cb.mark_line(strokeWidth=2) + cb.mark_point(filled=True, size=50) + clab)
+                            .properties(height=280), width="stretch")
