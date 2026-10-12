@@ -16,28 +16,32 @@ Elections are coded `p` (primary) or `g` (general) plus a two-digit year: p22, g
 
 ## Files needed
 
-| Type | Elections | SWDB name | Notes |
+| Type | Elections | SWDB name | Status |
 |---|---|---|---|
-| `sov` | p22 g22 p24 g24 (p26 if posted) | statement of vote by SR precinct | Has `addist`: AD9 rows are `addist == 9` |
-| `reg` | same | registration by SR precinct | |
-| `sov`, `reg` | g16 g18 p20 g20 | same, older elections | Old district lines: `addist` shows 12/21 etc., so these go through the block files below |
-| `blk_map` | g16 g18 p20 g20 | SR precinct to 2020 census block conversion | |
-| ~~`ad21_blocks.csv`~~ | — | 2021 Assembly district block assignment | Covered by `ad9_p24_sr_blk_map.csv` (below) |
+| `sov` | p16 g16 p18 g18 p20 g20 p22 g22 p24 g24 | statement of vote by SR precinct | **Done** (below). Add p26 when posted |
+| `reg` | same | registration by SR precinct | Needed: the statewide SOV files carry no party registration |
+| `blk_map` | p16 g16 p18 g18 p20 g20 | SR precinct to 2020 census block conversion | Needed for Amador, Calaveras, Sacramento, San Joaquin (Stanislaus g20 is here) |
+| ~~`ad21_blocks.csv`~~ | — | 2021 Assembly district block assignment | Covered by `ad9_p24_sr_blk_map.csv` |
 
 ## Already here
 
-### AD9 statement of vote, filtered from the statewide SWDB files
+### Statements of vote, filtered from the statewide SWDB srprec files
 
-`ad9_p22_sov.csv`, `ad9_g22_sov.csv`, `ad9_p24_sov.csv`, `ad9_g24_sov.csv`: rows with `ADDIST == 9`, with all-zero
-contest columns dropped. `COUNTY` is SWDB's county sequence number (3 Amador, 5 Calaveras, 34 Sacramento,
-39 San Joaquin, 50 Stanislaus), not FIPS.
+Made by `python scripts/filter_swdb.py <statewide files>`.
 
-* **Precinct keys differ:** p22, g22 and g24 use `SVPREC` (voting precincts); p24 uses `SRPREC`. Fine for district
-  totals and per-election leans, but don't join across them without SWDB's SV-to-SR conversion.
-* **Suppressed cells:** SWDB masks contest votes as `***` in very small precincts (g24: 50 rows, 223 ballots;
-  p24: 4 rows, 17 ballots). These are blank in the filtered files.
-* **No party registration:** `DEMREG`/`REPREG` are zero in these statewide files, so party registration needs the
+* `ad9_{p22,g22,p24,g24}_sov.csv`: current lines, rows with `ADDIST == 9`.
+* `c5_{p16,g16,p18,g18,p20,g20}_sov.csv`: old lines, every precinct in the five AD9 counties. `ADDIST` here is the
+  pre-2021 district (5, 6, 7, 8, 9, 11, 12, 13, 21), so these still need the block conversion to place them in
+  the current AD9.
+
+All use `SRPREC` / `SRPREC_KEY`. `COUNTY` is SWDB's county sequence number (3 Amador, 5 Calaveras, 34 Sacramento,
+39 San Joaquin, 50 Stanislaus); `FIPS` is the five-digit county FIPS.
+
+* **Suppressed cells:** SWDB masks contest votes as `***` in very small precincts (about 0.1% of ballots). These are
+  blank in the filtered files.
+* **No party registration:** `DEMREG`/`REPREG` are zero throughout, so party registration needs the
   registration-by-precinct files.
+* Contest columns that are zero throughout the output are dropped.
 
 | | p22 | g22 | p24 | g24 |
 |---|---|---|---|---|
