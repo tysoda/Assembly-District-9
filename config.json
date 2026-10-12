@@ -34,7 +34,7 @@
   "output": "output/ad9_forecast.json",
   "state_env": {
     "_note": "spec: 'sd4' = SD4's presidential+inflation+approval (approval unsigned); 'signed' = presidential + approval signed by the president's party ((approval-0.5) x +1 Dem / -1 Rep president); 'mean' = presidential flag only. All refit on two-party shares. Inputs are [mean, sd].",
-    "spec": "sd4",
+    "spec": "signed",
     "2026": {
       "inflation": [
         3.8,
@@ -59,7 +59,7 @@
       "_source": "D1 config defaults",
       "president_party": "R"
     },
-    "sd_from": 2016,
+    "sd_from": 2020,
     "_sd_note": "sd_from: walk-forward window for the state env uncertainty. 2016 = SD4 convention; 2020 = first year whose training data includes a Republican president (the only fair test of 'signed')."
   },
   "lean": {

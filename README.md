@@ -28,7 +28,7 @@ where needed → block group, weighted by registered voters. Outputs: `data/proc
 
 | Component | Method | Walk-forward |
 |---|---|---|
-| State environment | SD4 regression (presidential, inflation, approval) refit on two-party shares; `mean` spec available | SD4 spec MAE 6.6 pts; `mean` 4.3 pts |
+| State environment | presidential + approval signed by the president's party, refit on two-party shares (`state_spec=signed`, default); `sd4` and `mean` specs available | from 2020: signed MAE 2.9 pts, sd4 5.3, mean 2.7; uncertainty from the 2020+ walk-forward (`sd_from`) |
 | AD9 general lean vs state | mean of last three generals (auto-chosen over linear and block-group trends) | MAE 2.2 pts |
 | AD9 primary lean vs state | linear trend (auto-chosen) | MAE 3.0 pts |
 | Turnout | block-group panel OLS: block-group fixed effects + presidential + general + previous election's turnout; anchored to June 2026 (≈40%) | district MAE 7.1 pts from 2016 (3.5 from 2020) |
@@ -42,7 +42,12 @@ winning in 2026. The June 2026 primary can be blended in (`primary_2026.enabled`
 Outputs: `output/ad9_forecast.json` (all components and results), `output/bg_targets.csv` (per block group:
 registration and party mix, Hispanic-surname share, lean 2020–2024 and its change, 2024 and projected 2026 turnout).
 
-**Caveats.** SD4's approval term is not signed by the president's party; signed versions validate far worse with
-this little data, so `approval` is best treated as a knob. Turnout uncertainty from the 2016 walk-forward start is
+**State environment.** SD4's approval term isn't signed by the president's party, so an unpopular Republican president
+lowered the predicted Democratic share. The default here signs it ((approval − 0.5) × +1 Democratic / −1 Republican
+president) and drops inflation. It can only be tested fairly from 2020, the first year whose training data includes a
+Republican president, so its uncertainty is measured from 2020 too. It over-predicts the closest analogue (2018) by about
+2 pts and rests on two Republican-president cycles.
+
+**Caveats.** Turnout uncertainty from the 2016 walk-forward start is
 wide because the early years have little training data; it only affects vote counts, not win probabilities. The
 open-seat candidate effect is a prior: there's no D-vs-R open-seat race in the area to calibrate it.
