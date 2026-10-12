@@ -18,7 +18,7 @@ Elections are coded `p` (primary) or `g` (general) plus a two-digit year: p22, g
 
 | Type | Elections | SWDB name | Status |
 |---|---|---|---|
-| `sov` | p16 g16 p18 g18 p20 g20 p22 g22 p24 g24 | statement of vote by SR precinct | **Done** (below). Add p26 when posted |
+| `sov` | p12 g12 p14 g14 p16 g16 p18 g18 p20 g20 p22 g22 p24 g24 | statement of vote by SR precinct | **Done** (below). Add p26 when posted |
 | `reg` | same | registration by SR precinct | **Done**: `ad9_{e}_reg.csv`, `c5_{e}_reg.csv` |
 | `blk_map` | p16 g16 p18 g18 p20 g20 | SR precinct to census block | **Done** (2010 blocks) |
 | relationship | once | Census 2010-to-2020 tabulation block relationship file, CA | **Done**: `c5_tab2010_tab2020.csv` |
@@ -66,9 +66,9 @@ part's share.
 Joined to the CVAP file (registration-weighted), AD9's citizen voting-age population (2015–19) is about 297,000:
 27.7% Hispanic, 60.9% non-Hispanic white, 5.8% Asian, 2.4% Black.
 
-### 2016–2020 on current AD9 lines
+### 2012–2020 on current AD9 lines
 
-`python scripts/rebuild_old_lines.py` writes `ad9_{p16,g16,p18,g18,p20,g20}_sov.csv` (every count column multiplied
+`python scripts/rebuild_old_lines.py` writes `ad9_{p12,g12,p14,g14,p16,g16,p18,g18,p20,g20}_sov.csv` (every count column multiplied
 by the precinct's AD9 share; `AD9_SHARE` column added) and `ad9_{e}_precinct_share.csv`. The chain, all weighted by
 registered voters: 2020 block → AD9 (p24 block map + p24 precinct districts, `c5_p24_sr_blk_map.csv`), then 2010 block
 → 2020 blocks (Census relationship file, pieces weighted by p24 registrants × land-area share), then old precinct →
@@ -78,13 +78,13 @@ Precincts split by the new line get fractional votes, so totals are estimates ne
 election are partly in AD9). Validation against published current-line figures: g22 governor 34.4% D and g24
 president 38.0% D two-party, both matching. 2020 has no published current-line figure to check against.
 
-| | p16 | g16 | p18 | g18 | p20 | g20 | p22 | g22 | p24 | g24 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Registered (k) | 202 | 218 | 217 | 225 | 227 | 251 | 265 | 266 | 263 | 270 |
-| Turnout | 46.6% | 76.8% | 40.8% | 66.4% | 51.2% | 84.0% | 35.0% | 54.8% | 39.5% | 76.0% |
-| D two-party, top of ticket | Pres 46.5%\* | Pres 41.7% | Gov 40.0%\* | Gov 38.6% | Pres 43.6%\* | Pres 42.8% | Gov 36.9%\* | Gov 34.4% | Pres 33.8%\* | Pres 38.0% |
+| | p12 | g12 | p14 | g14 | p16 | g16 | p18 | g18 | p20 | g20 | p22 | g22 | p24 | g24 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Registered (k) | 186 | 196 | 192 | 194 | 202 | 218 | 217 | 225 | 227 | 251 | 265 | 266 | 263 | 270 |
+| Turnout | 38.6% | 75.2% | 32.0% | 48.8% | 46.6% | 76.8% | 40.8% | 66.4% | 51.2% | 84.0% | 35.0% | 54.8% | 39.5% | 76.0% |
+| D two-party, top of ticket | Pres 34.3%\* | Pres 41.8% | Gov 41.1%\* | Gov 42.4% | Pres 46.5%\* | Pres 41.7% | Gov 40.0%\* | Gov 38.6% | Pres 43.6%\* | Pres 42.8% | Gov 36.9%\* | Gov 34.4% | Pres 33.8%\* | Pres 38.0% |
 
-\* Primary: all Democratic vs all Republican candidates (2016 primary inflated by the contested Democratic race).
+\* Primary: all Democratic vs all Republican candidates (2016 primary inflated by the contested Democratic race; 2012 primary deflated, Obama unopposed).
 US Senate generals in 2016 and 2018 were Democrat vs Democrat.
 
 ### Registration on current AD9 lines
@@ -94,13 +94,13 @@ US Senate generals in 2016 and 2018 were Democrat vs Democrat.
 Totals agree with the results files' `TOTREG` to within 1% in every election. A few 2022+ results precincts
 (5–31 per election) have no registration row; they're precincts with no registered voters.
 
-| | p16 | g16 | p18 | g18 | p20 | g20 | p22 | g22 | p24 | g24 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Dem | 32.3% | 32.5% | 32.0% | 31.2% | 31.9% | 32.1% | 32.9% | 33.0% | 32.6% | 31.6% |
-| Rep | 44.3% | 43.0% | 41.7% | 40.4% | 41.4% | 41.5% | 40.4% | 40.2% | 41.4% | 42.0% |
-| No party preference | 18.5% | 19.4% | 20.8% | 22.8% | 20.3% | 19.6% | 18.9% | 18.8% | 17.8% | 18.3% |
-| Other parties | 4.9% | 5.1% | 5.5% | 5.5% | 6.5% | 6.9% | 7.8% | 8.0% | 8.2% | 8.2% |
-| Hispanic surname | 21.1% | 22.1% | 23.1% | 23.5% | 24.0% | 25.0% | 26.2% | 26.5% | 26.8% | 27.4% |
+| | p12 | g12 | p14 | g14 | p16 | g16 | p18 | g18 | p20 | g20 | p22 | g22 | p24 | g24 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Dem | 33.1% | 32.9% | 32.3% | 32.0% | 32.3% | 32.5% | 32.0% | 31.2% | 31.9% | 32.1% | 32.9% | 33.0% | 32.6% | 31.6% |
+| Rep | 46.7% | 46.1% | 45.1% | 44.8% | 44.3% | 43.0% | 41.7% | 40.4% | 41.4% | 41.5% | 40.4% | 40.2% | 41.4% | 42.0% |
+| No party preference | 15.6% | 16.2% | 17.5% | 18.0% | 18.5% | 19.4% | 20.8% | 22.8% | 20.3% | 19.6% | 18.9% | 18.8% | 17.8% | 18.3% |
+| Other parties | 4.6% | 4.8% | 5.1% | 5.2% | 4.9% | 5.1% | 5.5% | 5.5% | 6.5% | 6.9% | 7.8% | 8.0% | 8.2% | 8.2% |
+| Hispanic surname | 18.6% | 19.2% | 19.8% | 20.0% | 21.1% | 22.1% | 23.1% | 23.5% | 24.0% | 25.0% | 26.2% | 26.5% | 26.8% | 27.4% |
 
 ### Older block maps (five counties)
 
