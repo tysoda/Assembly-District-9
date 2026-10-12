@@ -6,8 +6,8 @@ Precinct-level files from the Statewide Database (statewidedatabase.org). Name e
 
 | County | FIPS | Part of county in AD9 |
 |---|---|---|
-| Amador | 005 | all |
-| Calaveras | 009 | all |
+| Amador | 005 | part (~6,300 registered in AD9) |
+| Calaveras | 009 | part (~10,200 registered in AD9) |
 | Sacramento | 067 | part |
 | San Joaquin | 077 | part |
 | Stanislaus | 099 | part |

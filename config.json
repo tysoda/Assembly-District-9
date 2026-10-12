@@ -1,0 +1,138 @@
+{
+  "_comment": "AD9 forecast settings. Priors are modelling assumptions, not data: change them and re-run. To point the pipeline at another district, change `district`.",
+  "district": {
+    "name": "Assembly District 9",
+    "type_column": "ADDIST",
+    "number": 9,
+    "county_fips": [
+      "06005",
+      "06009",
+      "06067",
+      "06077",
+      "06099"
+    ]
+  },
+  "data": {
+    "elections": [
+      "p12",
+      "g12",
+      "p14",
+      "g14",
+      "p16",
+      "g16",
+      "p18",
+      "g18",
+      "p20",
+      "g20",
+      "p22",
+      "g22",
+      "p24",
+      "g24"
+    ],
+    "sd4_dir": "data/sd4"
+  },
+  "output": "output/ad9_forecast.json",
+  "state_env": {
+    "_note": "spec 'sd4' = SD4's presidential+inflation+approval regression; 'mean' = presidential flag only (validates better, see output). Both refit on two-party shares. Inputs are [mean, sd].",
+    "spec": "sd4",
+    "2026": {
+      "inflation": [
+        3.8,
+        0.3
+      ],
+      "approval": [
+        0.39,
+        0.02
+      ],
+      "_source": "SD4 forecast_params.json context, Oct 2026"
+    },
+    "2028": {
+      "inflation": [
+        3.0,
+        1.0
+      ],
+      "approval": [
+        0.42,
+        0.05
+      ],
+      "_source": "D1 config defaults"
+    }
+  },
+  "lean": {
+    "_note": "auto = lowest walk-forward MAE on the elections all methods can predict",
+    "general_method": "auto",
+    "primary_method": "auto"
+  },
+  "turnout": {
+    "spec": "sd4",
+    "wf_start": "p16",
+    "min_reg": 50,
+    "anchors": {
+      "p26": [
+        0.4,
+        0.02,
+        "June 2026: county turnout vs June 2022 (Amador +5%, Calaveras +13%, Stanislaus +19%, SD4 data) applied to AD9's p22 35.0%; consistent with ~104,700 AD9 Assembly primary votes"
+      ]
+    }
+  },
+  "registration": {
+    "trend_generals": 3
+  },
+  "incumbent": {
+    "_note": "Flora's Assembly R share minus the top-of-ticket R share, in his district's precincts",
+    "races": [
+      {
+        "label": "g18 AD12",
+        "file": "c5_g18_sov.csv",
+        "district": 12,
+        "top": "GOV"
+      },
+      {
+        "label": "g20 AD12",
+        "file": "c5_g20_sov.csv",
+        "district": 12,
+        "top": "PRS"
+      },
+      {
+        "label": "g22 AD9",
+        "file": "ad9_g22_sov.csv",
+        "district": 9,
+        "top": "GOV"
+      }
+    ],
+    "edge_sd_floor": 0.02,
+    "challenger_quality_sd": 0.02
+  },
+  "primary_2026": {
+    "_note": "Opt-in blend with the June 2026 Assembly primary (Democratic candidates' combined share). Needs Amador and Calaveras results to complete.",
+    "enabled": false,
+    "dem_share": 0.355,
+    "primary_to_general_shift": [
+      -0.009,
+      0.019
+    ],
+    "_source": "June 2026 AD9 Assembly primary: Adams 27,321 districtwide (26.1%, SOS); Perez 9,194 in Sacramento/San Joaquin/Stanislaus (SOS county pages) + ~660 estimated for the Amador/Calaveras parts (Perez:Adams ratio elsewhere); total ~104,700. Replace with certified districtwide totals.",
+    "_shift_source": "AD9 midterm top-of-ticket primary-to-general change: p14->g14 +1.3, p18->g18 -1.4, p22->g22 -2.5 pts"
+  },
+  "open_seat": {
+    "_note": "Open-seat Assembly D share = top-of-ticket D share + N(edge_mean, candidate_quality_sd). Prior: no AD9-area D-vs-R open seat to calibrate.",
+    "edge_mean": 0.0,
+    "candidate_quality_sd": 0.035
+  },
+  "primary_2028": {
+    "_note": "Top-two primary, March 2028. Candidates' shares within each party ~ Dirichlet(concentration); lower = more lopsided fields.",
+    "n_dem": 2,
+    "n_rep": 3,
+    "concentration": 2.0,
+    "state_primary_vs_general_sd": 0.02
+  },
+  "votes": {
+    "assembly_completion_g26": 0.965,
+    "assembly_completion_g28": 0.95,
+    "_source": "g22 AD9: 140,099 Assembly votes of 145,214 ballots; 2028 lower for a presidential ballot"
+  },
+  "scenario": {
+    "n_sims": 20000,
+    "seed": 2026
+  }
+}
