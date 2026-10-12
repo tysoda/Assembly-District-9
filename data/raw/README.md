@@ -65,6 +65,13 @@ part's share.
 Joined to the CVAP file (registration-weighted), AD9's citizen voting-age population (2015–19) is about 297,000:
 27.7% Hispanic, 60.9% non-Hispanic white, 5.8% Asian, 2.4% Black.
 
+### Older block maps and registration (five counties)
+
+* `c5_{p16,g16,p18}_sr_blk_map.csv`: SWDB precinct-to-block maps, five AD9 counties only. **These use 2010
+  census blocks**, so they can't be joined straight to `ad9_p24_sr_blk_map.csv` (2020 blocks). They need the
+  Census 2010-to-2020 block relationship file for California, or SWDB's `GeoConv_SRPREC_BLOCK20` versions.
+* `c5_p20_reg.csv`: p20 registration by SR precinct, five AD9 counties (1,458,120 registered).
+
 ### Copied from Stanislaus-County-District-1
 
 `c099_p20_sov.csv`, `c099_g20_sov.csv`, `c099_g22_sov.csv`, `c099_g24_sov.csv`, `c099_g22_reg.csv`,
