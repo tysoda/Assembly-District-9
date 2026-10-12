@@ -104,7 +104,7 @@ Totals agree with the results files' `TOTREG` to within 1% in every election. A 
 
 ### Older block maps (five counties)
 
-* `c5_{p16,g16,p18,g18,p20,g20}_sr_blk_map.csv`: SWDB precinct-to-block maps, five AD9 counties only. **These use 2010
+* `c5_{e}_sr_blk_map.csv`: SWDB precinct-to-block maps for every election p12–g24, five AD9 counties only. p22, g22, p24 and g24 use 2020 blocks. **p12–g20 use 2010
   census blocks**, so they can't be joined straight to `ad9_p24_sr_blk_map.csv` (2020 blocks). They need the
   Census 2010-to-2020 block relationship file for California, or SWDB's `GeoConv_SRPREC_BLOCK20` versions.
 
