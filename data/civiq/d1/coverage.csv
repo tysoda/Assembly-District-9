@@ -1,2 +1,3 @@
 county,precincts,reg_precincts,reg_feed,ret_precincts,ret_feed,reg_diff,ok,gap_dem_registered,gap_rep_registered,gap_other_registered,gap_dem_returned,gap_rep_returned,gap_other_returned,snapshot_utc,zoom
 Stanislaus,274,65626,66517,803,819,-0.0134,True,202,503,186,5,8,3,2026-10-17T0716Z,8
+Stanislaus,274,65626,66517,803,819,-0.0134,True,202,503,186,5,8,3,2026-10-17T0720Z,8
