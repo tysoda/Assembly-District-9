@@ -6,10 +6,13 @@ Data collection and analysis for California Assembly District 9 (Amador, Calaver
 
 | Source | What | How | Where |
 |---|---|---|---|
-| Optiq (`abev.optiqdata.com`) | Ballot returns by party, age, gender, ethnicity and return date (district); registered and returned by party for each county | GitHub Action `optiq_ad9.yml`, daily plus every 3 hours in election week | `data/optiq_ad9/` |
+| Civiq (`abev.civiq.vote`, formerly `abev.optiqdata.com`) | Ballot returns by party, age, gender, ethnicity and return date (district-wide only); registered and returned by party for each county (no demographics at county level). AD9 and Stanislaus Supervisor District 1 (`STANISLAUS COUNTY SUPERVISORIAL 1`) | GitHub Action `optiq_ad9.yml`, daily plus every 3 hours in election week | `data/optiq_ad9/`, `data/optiq_d1/` |
+| Civiq precinct map tiles | Registered and returned by party for every California precinct, checked against each county's Civiq total; AD9 and D1 subsets by precinct centre inside the district boundary, checked against the district's county feed | same Action, `scripts/civiq_precincts.py` | `data/civiq/state/` (statewide snapshot per run, `county_totals.csv`, `coverage.csv`), `data/civiq/ad9/`, `data/civiq/d1/` (`precincts.csv` time series, `coverage.csv`, `precincts.geojson`) |
 | CA SOS results API, county registrars, SOS unprocessed ballots | Results and ballots-received counts | Claude scheduled tasks | Google Drive folder "AD9 2026 Snapshots" |
 
-Each Optiq run writes `raw_<UTC>.json` (untouched) and `flat_<UTC>.csv` (one row per record, with `snapshot_utc`) for the district, and `raw_county_<UTC>.json` / `county_<UTC>.csv` for the county breakdown. The county endpoint has no per-day detail, so these snapshots are its only time series. To trigger a run by hand, open **Actions → Optiq AD9 snapshot → Run workflow**.
+Each feed run writes `raw_<UTC>.json` (untouched) and `flat_<UTC>.csv` (one row per record, with `snapshot_utc`) for the district, and `raw_county_<UTC>.json` / `county_<UTC>.csv` for the county breakdown. The county endpoint has no per-day detail, so these snapshots are its only time series. To trigger a run by hand, open **Actions → Civiq AD9 + D1 snapshot → Run workflow**.
+
+Precinct snapshots are adapted from `fetch_optiq_precincts.py` in the SD4 repo. Boundaries: `data/boundaries/d1.geojson` (county supervisorial map, 2021) and `data/boundaries/ad9.geojson` (Census TIGER state legislative districts, downloaded on the first Action run). A district snapshot is written only if its registration total is within 2% of Civiq's; the statewide one only if the precincts account for at least 95% of registration in the county feeds.
 
 ## Streamlit app
 
