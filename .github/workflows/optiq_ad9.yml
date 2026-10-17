@@ -39,7 +39,7 @@ jobs:
         run: |
           git config user.name "optiq-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/optiq_ad9 data/optiq_d1
+          git add data/optiq_ad9 data/optiq_d1 data/optiq_county
           for d in data/civiq data/boundaries; do
             if [ -d "$d" ]; then git add "$d"; fi
           done

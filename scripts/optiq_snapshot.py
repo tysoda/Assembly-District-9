@@ -1,6 +1,7 @@
 """Snapshot Civiq (formerly Optiq) ballot-return data for AD9 and Stanislaus Supervisor District 1.
 
-Saves per run into data/optiq_ad9/ and data/optiq_d1/:
+Saves per run into data/optiq_ad9/ and data/optiq_d1/ (and the district files only,
+for each whole AD9 county, into data/optiq_county/<county>/):
   raw_<UTC stamp>.json         - district ballot returns (party x age x gender x ethnicity x return date), untouched
   flat_<UTC stamp>.csv         - the same, one row per record, with snapshot_utc added
   raw_county_<UTC stamp>.json  - returns by county (registered and returned by party), untouched
@@ -28,6 +29,12 @@ DISTRICTS = {                      # output folder: Civiq district name
     "optiq_ad9": "STATE ASSEMBLY 9",
     "optiq_d1": "STANISLAUS COUNTY SUPERVISORIAL 1",
 }
+# Whole-county demographics for AD9's counties: Civiq treats each county as a district,
+# so its ballot-returns feed has the full party x age x gender x ethnicity breakdown.
+# This covers the whole county, not only the part in AD9. The county breakdown feed
+# isn't fetched for these (it would be one row; data/civiq/state/county_totals.csv has it).
+COUNTIES = {f"optiq_county/{c.lower().replace(' ', '_')}": f"{c} COUNTY"
+            for c in ("AMADOR", "CALAVERAS", "SACRAMENTO", "SAN JOAQUIN", "STANISLAUS")}
 _CA = "/root/.ccr/ca-bundle.crt"
 CTX = ssl.create_default_context(cafile=_CA if os.path.exists(_CA) else None)
 
@@ -77,10 +84,12 @@ def by_county(out, slug, stamp):
 def main():
     stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H%MZ")
     jobs = failed = 0
-    for folder, slug in DISTRICTS.items():
+    targets = [(f, s, (("district", district), ("county", by_county))) for f, s in DISTRICTS.items()]
+    targets += [(f, s, (("district", district),)) for f, s in COUNTIES.items()]
+    for folder, slug, steps in targets:
         out = DATA / folder
         out.mkdir(parents=True, exist_ok=True)
-        for name, job in (("district", district), ("county", by_county)):
+        for name, job in steps:
             jobs += 1
             try:
                 job(out, slug, stamp)
