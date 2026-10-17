@@ -489,7 +489,12 @@ def main():
     print(f"Statewide: zoom {z}, {len(df):,} precincts, {int(df['total_registered'].sum()):,} registered, "
           f"{int(df['total_returned'].sum()):,} returned; coverage {cov:.2%}")
     show(rep, only_bad=True)
-    ok_state = cov >= MIN_COVERAGE and len(df)
+    ok_state = bool(cov >= MIN_COVERAGE and len(df))
+    if not args.dry_run:
+        # Always recorded, so a run that isn't saved can be diagnosed from the repo
+        append_csv(OUT / "state" / "coverage.csv",
+                   rep.assign(snapshot_utc=stamp, zoom=z, county=rep["county"].str.title(), saved=ok_state,
+                              coverage=round(cov, 4)), "snapshot_utc", stamp)
     if not ok_state:
         print(f"ERROR: statewide coverage {cov:.1%} is below {MIN_COVERAGE:.0%}; statewide snapshot not written.",
               file=sys.stderr)
@@ -498,8 +503,6 @@ def main():
         p.parent.mkdir(parents=True, exist_ok=True)
         with gzip.open(p, "wt", newline="") as f:
             tidy(df, stamp).sort_values(["county", "precinct"]).to_csv(f, index=False)
-        n = append_csv(OUT / "state" / "coverage.csv",
-                       rep.assign(snapshot_utc=stamp, zoom=z, county=rep["county"].str.title()), "snapshot_utc", stamp)
         print(f"  ✓ {len(df):,} precincts → {p.relative_to(REPO)} ({p.stat().st_size / 1e6:.1f} MB)")
 
     # 3. Districts
