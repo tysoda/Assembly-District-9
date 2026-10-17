@@ -8,17 +8,19 @@ Stanislaus Supervisor District 1 subsets.
 Civiq's precinct map (abev.civiq.vote) is served as Mapbox vector tiles:
   https://abev.civiq.vote/api/tiles/{district}/{z}/{x}/{y}.pbf
 Each tile has a "precincts" layer with, per precinct: precinct_shapefile,
-county_name, {dem,rep,other,total}_{registered,returned}, margin_pct. Tiles are
-not limited to the district in the URL; they hold every precinct in their area.
+county_name, {dem,rep,other,total}_{registered,returned}, margin_pct. A tile
+holds only the precincts of the district in its URL (for a split county, only
+the part inside the district).
 Adapted from fetch_optiq_precincts.py in tysoda/2026-Ca-SD4-forecast-V2.
 
 Each run:
   1. County totals: Civiq's county-level feed for each of the 58 "<NAME> COUNTY"
      districts, saved to data/civiq/state/county_totals.csv. These are the check
      on the statewide precinct sums.
-  2. Statewide precincts: every California tile at one zoom (trying finer zooms
-     until county totals match), pieces cut by tile edges merged. A county that
-     doesn't match is refetched under its own county's tiles. Saved to
+  2. Statewide precincts: tiles hold only the precincts of the district named in
+     the URL, so each county is fetched under its own "<NAME> COUNTY" address
+     (finer zooms tried until its total matches), pieces cut by tile edges
+     merged. Saved to
      data/civiq/state/precincts_<stamp>.csv.gz, with per-county coverage in
      data/civiq/state/coverage.csv.
   3. Districts (AD9, D1): precincts whose centre falls inside the district
@@ -66,9 +68,9 @@ REPO = Path(__file__).resolve().parent.parent
 OUT = REPO / "data" / "civiq"
 BOUNDARIES = REPO / "data" / "boundaries"
 BASE = "https://abev.civiq.vote/api"
-STATE_SLUG = "STATE SENATE 4"        # any district works for statewide tiles; this is the one the map uses
+PROBE_ZOOM = 5                       # coarse pass to find each county's extent
 CA_BBOX = (-124.5, 32.5, -114.1, 42.05)
-ZOOMS = (7, 8)
+ZOOMS = (8, 9)
 MATCH_TOLERANCE = 0.02               # |precinct sum − Civiq county total| / total
 MIN_COVERAGE = 0.95                  # share of statewide registration in matching counties needed to save
 FIELDS = ["dem_registered", "rep_registered", "other_registered", "total_registered",
@@ -315,40 +317,44 @@ def show(report: pd.DataFrame, only_bad: bool = False) -> None:
 
 # ── Statewide ────────────────────────────────────────────────────────────────
 def statewide(src: Source, feed: dict, zooms) -> tuple:
-    best = None
-    for z in zooms:
+    """Tiles hold only the precincts of the district named in the URL (the SD4
+    address gives SD4's counties, and only SD4's part of a split county), so each
+    county is fetched under its own "<NAME> COUNTY" address: a coarse pass to find
+    where the county is, then finer zooms until its total matches Civiq's."""
+    frames, precincts, zoom_used, keys = [], {}, {}, set()
+    for c in CA_COUNTIES:
+        slug = f"{c} COUNTY"
         stats: dict = {}
-        precincts = decode_tiles(src, STATE_SLUG, tiles_for_bbox(CA_BBOX, z), stats)
-        df = to_frame(precincts, stats)
-        rep = compare(df, feed, CA_COUNTIES)
-        cov = coverage(rep)
-        print(f"Statewide zoom {z}: {stats['tiles']} tiles, {stats['features']:,} features, "
-              f"{len(df):,} CA precincts ({stats['no_county']} unlabelled, {stats['no_id']} without an id); "
-              f"{int(rep['ok'].sum())}/{int(rep['reg_feed'].notna().sum())} counties match, coverage {cov:.2%}")
-        print(f"  tile fields: {', '.join(sorted(stats['keys']))}")
-        if best is None or cov > best[0] + 1e-9:
-            best = (cov, z, df, precincts, rep)
-        if rep["reg_feed"].notna().any() and rep.loc[rep["reg_feed"].notna(), "ok"].all():
-            break
-    cov, z, df, precincts, rep = best
-
-    # Counties that still don't match: try their own county's tiles at the same zoom
-    for c in rep.loc[~rep["ok"] & rep["reg_feed"].notna(), "county"]:
-        own = df[df["county"] == c]
-        if own.empty:
+        probe = to_frame(decode_tiles(src, slug, tiles_for_bbox(CA_BBOX, PROBE_ZOOM), stats), stats)
+        probe = probe[probe["county"] == c]
+        if probe.empty:
+            print(f"  {c.title()}: no precincts in its tiles", file=sys.stderr)
             continue
-        bbox = (own.lon.min() - 0.05, own.lat.min() - 0.05, own.lon.max() + 0.05, own.lat.max() + 0.05)
-        stats = {}
-        alt_p = decode_tiles(src, f"{c} COUNTY", tiles_for_bbox(bbox, z), stats)
-        alt = to_frame(alt_p, stats)
-        alt = alt[alt["county"] == c]
-        a = compare(alt, feed, [c]).iloc[0]
-        b = rep.set_index("county").loc[c]
-        if a["reg_diff"] is not None and (b["reg_diff"] is None or abs(a["reg_diff"]) < abs(b["reg_diff"])):
-            print(f"  {c.title()}: own-county tiles match better ({b['reg_diff']:+.2%} → {a['reg_diff']:+.2%})")
-            df = pd.concat([df[df["county"] != c], alt], ignore_index=True)
-            precincts = {k: v for k, v in precincts.items() if k[0] != c} | {k: v for k, v in alt_p.items() if k[0] == c}
+        bbox = (probe.lon.min() - 0.15, probe.lat.min() - 0.15, probe.lon.max() + 0.15, probe.lat.max() + 0.15)
+        best = None
+        for z in zooms:
+            stats = {}
+            p = decode_tiles(src, slug, tiles_for_bbox(bbox, z), stats)
+            d = to_frame(p, stats)
+            d = d[d["county"] == c]
+            keys |= stats["keys"]
+            r = compare(d, feed, [c]).iloc[0]
+            gap = abs(r["reg_diff"]) if r["reg_diff"] is not None else -len(d)
+            if best is None or gap < best[0]:
+                best = (gap, z, d, p, r)
+            if r["ok"]:
+                break
+        gap, z, d, p, r = best
+        frames.append(d)
+        precincts |= {k: v for k, v in p.items() if k[0] == c}
+        zoom_used[c] = z
+        print(f"  {c.title()}: zoom {z}, {len(d):,} precincts, {int(d['total_registered'].sum()):,} registered"
+              + (f" ({r['reg_diff']:+.2%} vs Civiq)" if r["reg_diff"] is not None else " (no Civiq total)"))
+    print(f"  tile fields: {', '.join(sorted(keys))}")
+    df = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(columns=["county", "precinct", "lon", "lat"] + FIELDS)
     rep = compare(df, feed, CA_COUNTIES)
+    rep["zoom"] = rep["county"].map(zoom_used)
+    z = max(zoom_used.values()) if zoom_used else zooms[-1]
     return coverage(rep), z, df, precincts, rep
 
 
@@ -486,14 +492,14 @@ def main():
 
     # 2. Statewide precincts
     cov, z, df, precincts, rep = statewide(src, feed, [args.zoom] if args.zoom else ZOOMS)
-    print(f"Statewide: zoom {z}, {len(df):,} precincts, {int(df['total_registered'].sum()):,} registered, "
+    print(f"Statewide: {len(df):,} precincts, {int(df['total_registered'].sum()):,} registered, "
           f"{int(df['total_returned'].sum()):,} returned; coverage {cov:.2%}")
     show(rep, only_bad=True)
     ok_state = bool(cov >= MIN_COVERAGE and len(df))
     if not args.dry_run:
         # Always recorded, so a run that isn't saved can be diagnosed from the repo
         append_csv(OUT / "state" / "coverage.csv",
-                   rep.assign(snapshot_utc=stamp, zoom=z, county=rep["county"].str.title(), saved=ok_state,
+                   rep.assign(snapshot_utc=stamp, county=rep["county"].str.title(), saved=ok_state,
                               coverage=round(cov, 4)), "snapshot_utc", stamp)
     if not ok_state:
         print(f"ERROR: statewide coverage {cov:.1%} is below {MIN_COVERAGE:.0%}; statewide snapshot not written.",
