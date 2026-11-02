@@ -1,0 +1,13 @@
+first_seen_utc,geography,reporting_time,reporting,precincts_reported,precincts_total,race_title,candidate,party,incumbent,votes,percent
+2026-11-02T05:24:29+00:00,district,"November 1, 2026, 12:42 p.m.",0% (0 of 303) precincts reporting,0,303,State Assembly District 9 - Districtwide Results,Matthew Adams,Dem,False,0,0.0
+2026-11-02T05:24:29+00:00,district,"November 1, 2026, 12:42 p.m.",0% (0 of 303) precincts reporting,0,303,State Assembly District 9 - Districtwide Results,Heath Flora,Rep,True,0,0.0
+2026-11-02T05:24:29+00:00,amador,"November 1, 2026, 12:42 p.m.",0% (0 of 8) precincts reporting,0,8,State Assembly District 9 - Amador County Results,Matthew Adams,Dem,False,0,0.0
+2026-11-02T05:24:29+00:00,amador,"November 1, 2026, 12:42 p.m.",0% (0 of 8) precincts reporting,0,8,State Assembly District 9 - Amador County Results,Heath Flora,Rep,True,0,0.0
+2026-11-02T05:24:29+00:00,calaveras,"November 1, 2026, 12:42 p.m.",0% (0 of 6) precincts reporting,0,6,State Assembly District 9 - Calaveras County Results,Matthew Adams,Dem,False,0,0.0
+2026-11-02T05:24:29+00:00,calaveras,"November 1, 2026, 12:42 p.m.",0% (0 of 6) precincts reporting,0,6,State Assembly District 9 - Calaveras County Results,Heath Flora,Rep,True,0,0.0
+2026-11-02T05:24:29+00:00,sacramento,"November 1, 2026, 12:42 p.m.",0% (0 of 64) precincts reporting,0,64,State Assembly District 9 - Sacramento County Results,Matthew Adams,Dem,False,0,0.0
+2026-11-02T05:24:29+00:00,sacramento,"November 1, 2026, 12:42 p.m.",0% (0 of 64) precincts reporting,0,64,State Assembly District 9 - Sacramento County Results,Heath Flora,Rep,True,0,0.0
+2026-11-02T05:24:29+00:00,san-joaquin,"November 1, 2026, 12:42 p.m.",0% (0 of 164) precincts reporting,0,164,State Assembly District 9 - San Joaquin County Results,Matthew Adams,Dem,False,0,0.0
+2026-11-02T05:24:29+00:00,san-joaquin,"November 1, 2026, 12:42 p.m.",0% (0 of 164) precincts reporting,0,164,State Assembly District 9 - San Joaquin County Results,Heath Flora,Rep,True,0,0.0
+2026-11-02T05:24:29+00:00,stanislaus,"November 1, 2026, 12:42 p.m.",0% (0 of 61) precincts reporting,0,61,State Assembly District 9 - Stanislaus County Results,Matthew Adams,Dem,False,0,0.0
+2026-11-02T05:24:29+00:00,stanislaus,"November 1, 2026, 12:42 p.m.",0% (0 of 61) precincts reporting,0,61,State Assembly District 9 - Stanislaus County Results,Heath Flora,Rep,True,0,0.0
