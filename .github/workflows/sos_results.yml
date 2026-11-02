@@ -1,0 +1,57 @@
+name: SOS AD9 results log
+
+# Logs the Secretary of State's AD9 results (districtwide and the five counties)
+# each time they change, with the time first seen, to measure reporting speed.
+on:
+  schedule:
+    # Election night, 19:50 PT Nov 3 to 06:50 PT Nov 4. Each run polls every
+    # 2 minutes until 07:00 PT; the hourly starts are back-ups in case a run is
+    # dropped or ends early (runs queue rather than overlap).
+    - cron: "50 3-14 4 11 *"
+    # Canvass week: one poll every 15 minutes, Nov 4 07:00 PT to Nov 10
+    - cron: "*/15 15-23 4 11 *"
+    - cron: "*/15 * 5-10 11 *"
+    # Rest of the canvass to certification: hourly
+    - cron: "41 * 11-30 11 *"
+    - cron: "41 * 1-12 12 *"
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: "Keep polling for this many minutes (0 = one poll)"
+        default: "0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sos-results
+  cancel-in-progress: false
+
+jobs:
+  log:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Poll SOS results
+        env:
+          MINUTES: ${{ github.event.inputs.minutes || '0' }}
+        run: |
+          git config user.name "sos-results-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          NOW=$(date -u +%s)
+          NIGHT_START=$(date -u -d 2026-11-04T03:30:00Z +%s)
+          NIGHT_END=$(date -u -d 2026-11-04T15:00:00Z +%s)
+          if [ "$NOW" -ge "$NIGHT_START" ] && [ "$NOW" -lt "$NIGHT_END" ]; then
+            python scripts/sos_results.py --until 2026-11-04T15:00Z --interval 120 --max-minutes 345 --commit
+          elif [ "$MINUTES" != "0" ]; then
+            UNTIL=$(date -u -d "+${MINUTES} minutes" +%Y-%m-%dT%H:%MZ)
+            python scripts/sos_results.py --until "$UNTIL" --interval 120 --commit
+          else
+            python scripts/sos_results.py --commit
+          fi
