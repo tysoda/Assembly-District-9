@@ -1,0 +1,44 @@
+[
+  {
+    "raceTitle": "State Assembly District 9 - Sacramento County Results",
+    "Reporting": "100% (64 of 64) precincts reporting",
+    "ReportingTime": "November 4, 2026, 1:33 a.m.",
+    "candidates": [
+      {
+        "Name": "Matthew Adams",
+        "Party": "Dem",
+        "Votes": "4,404",
+        "Percent": "40.1",
+        "incumbent": false
+      },
+      {
+        "Name": "Heath Flora",
+        "Party": "Rep",
+        "Votes": "6,579",
+        "Percent": "59.9",
+        "incumbent": true
+      }
+    ]
+  },
+  {
+    "raceTitle": "State Assembly District 9 - Districtwide Results",
+    "Reporting": "100% (303 of 303) precincts reporting",
+    "ReportingTime": "November 4, 2026, 4:11 a.m.",
+    "candidates": [
+      {
+        "Name": "Matthew Adams",
+        "Party": "Dem",
+        "Votes": "39,503",
+        "Percent": "42.6",
+        "incumbent": false
+      },
+      {
+        "Name": "Heath Flora",
+        "Party": "Rep",
+        "Votes": "53,183",
+        "Percent": "57.4",
+        "incumbent": true
+      }
+    ]
+  }
+]
