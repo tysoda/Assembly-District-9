@@ -1,0 +1,44 @@
+[
+  {
+    "raceTitle": "State Assembly District 9 - San Joaquin County Results",
+    "Reporting": "100% (164 of 164) precincts reporting",
+    "ReportingTime": "November 4, 2026, 1:09 a.m.",
+    "candidates": [
+      {
+        "Name": "Matthew Adams",
+        "Party": "Dem",
+        "Votes": "25,216",
+        "Percent": "45.8",
+        "incumbent": false
+      },
+      {
+        "Name": "Heath Flora",
+        "Party": "Rep",
+        "Votes": "29,833",
+        "Percent": "54.2",
+        "incumbent": true
+      }
+    ]
+  },
+  {
+    "raceTitle": "State Assembly District 9 - Districtwide Results",
+    "Reporting": "100% (303 of 303) precincts reporting",
+    "ReportingTime": "November 6, 2026, 9:27 a.m.",
+    "candidates": [
+      {
+        "Name": "Matthew Adams",
+        "Party": "Dem",
+        "Votes": "40,745",
+        "Percent": "42.6",
+        "incumbent": false
+      },
+      {
+        "Name": "Heath Flora",
+        "Party": "Rep",
+        "Votes": "54,958",
+        "Percent": "57.4",
+        "incumbent": true
+      }
+    ]
+  }
+]
