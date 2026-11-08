@@ -1,0 +1,44 @@
+[
+  {
+    "raceTitle": "State Assembly District 9 - Amador County Results",
+    "Reporting": "100% (8 of 8) precincts reporting",
+    "ReportingTime": "November 6, 2026, 1:59 p.m.",
+    "candidates": [
+      {
+        "Name": "Matthew Adams",
+        "Party": "Dem",
+        "Votes": "1,207",
+        "Percent": "27.8",
+        "incumbent": false
+      },
+      {
+        "Name": "Heath Flora",
+        "Party": "Rep",
+        "Votes": "3,140",
+        "Percent": "72.2",
+        "incumbent": true
+      }
+    ]
+  },
+  {
+    "raceTitle": "State Assembly District 9 - Districtwide Results",
+    "Reporting": "100% (303 of 303) precincts reporting",
+    "ReportingTime": "November 7, 2026, 4:42 p.m.",
+    "candidates": [
+      {
+        "Name": "Matthew Adams",
+        "Party": "Dem",
+        "Votes": "50,758",
+        "Percent": "43.1",
+        "incumbent": false
+      },
+      {
+        "Name": "Heath Flora",
+        "Party": "Rep",
+        "Votes": "67,087",
+        "Percent": "56.9",
+        "incumbent": true
+      }
+    ]
+  }
+]
