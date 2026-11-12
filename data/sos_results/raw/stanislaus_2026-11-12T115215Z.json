@@ -1,0 +1,44 @@
+[
+  {
+    "raceTitle": "State Assembly District 9 - Stanislaus County Results",
+    "Reporting": "100% (61 of 61) precincts reporting",
+    "ReportingTime": "November 9, 2026, 5:44 p.m.",
+    "candidates": [
+      {
+        "Name": "Matthew Adams",
+        "Party": "Dem",
+        "Votes": "10,822",
+        "Percent": "40.0",
+        "incumbent": false
+      },
+      {
+        "Name": "Heath Flora",
+        "Party": "Rep",
+        "Votes": "16,202",
+        "Percent": "60.0",
+        "incumbent": true
+      }
+    ]
+  },
+  {
+    "raceTitle": "State Assembly District 9 - Districtwide Results",
+    "Reporting": "100% (303 of 303) precincts reporting",
+    "ReportingTime": "November 11, 2026, 6:51 p.m.",
+    "candidates": [
+      {
+        "Name": "Matthew Adams",
+        "Party": "Dem",
+        "Votes": "66,531",
+        "Percent": "43.6",
+        "incumbent": false
+      },
+      {
+        "Name": "Heath Flora",
+        "Party": "Rep",
+        "Votes": "86,154",
+        "Percent": "56.4",
+        "incumbent": true
+      }
+    ]
+  }
+]
