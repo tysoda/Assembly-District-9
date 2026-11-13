@@ -1,0 +1,21 @@
+{
+  "raceTitle": "State Assembly District 9 - Districtwide Results",
+  "Reporting": "100% (303 of 303) precincts reporting",
+  "ReportingTime": "November 12, 2026, 8:46 p.m.",
+  "candidates": [
+    {
+      "Name": "Matthew Adams",
+      "Party": "Dem",
+      "Votes": "69,535",
+      "Percent": "43.5",
+      "incumbent": false
+    },
+    {
+      "Name": "Heath Flora",
+      "Party": "Rep",
+      "Votes": "90,222",
+      "Percent": "56.5",
+      "incumbent": true
+    }
+  ]
+}
