@@ -1007,3 +1007,9 @@ poll_utc,geography,http_status,error,reporting_time,reporting,last_modified,etag
 2026-11-25T20:12:14+00:00,sacramento,200,,"November 24, 2026, 3:51 p.m.",100% (64 of 64) precincts reporting,,,d1f44f92c2f34c41,True
 2026-11-25T20:12:14+00:00,san-joaquin,200,,"November 23, 2026, 4:23 p.m.",100% (164 of 164) precincts reporting,,,c1dc7ba5ec575d66,True
 2026-11-25T20:12:14+00:00,stanislaus,200,,"November 19, 2026, 4:28 p.m.",100% (61 of 61) precincts reporting,,,1dc369aa9e08de47,True
+2026-11-26T03:07:42+00:00,district,200,,"November 25, 2026, 6:54 p.m.",100% (303 of 303) precincts reporting,,,3fcc0abe4dbece51,True
+2026-11-26T03:07:42+00:00,amador,200,,"November 25, 2026, 2:50 p.m.",100% (8 of 8) precincts reporting,,,dc3361e8291865ff,True
+2026-11-26T03:07:42+00:00,calaveras,200,,"November 24, 2026, 12:55 p.m.",100% (6 of 6) precincts reporting,,,1ae4bdf9740733d3,True
+2026-11-26T03:07:42+00:00,sacramento,200,,"November 25, 2026, 5:30 p.m.",100% (64 of 64) precincts reporting,,,ffafa28c0b4078d3,True
+2026-11-26T03:07:42+00:00,san-joaquin,200,,"November 25, 2026, 5:46 p.m.",100% (164 of 164) precincts reporting,,,8d978668a8144f35,True
+2026-11-26T03:07:42+00:00,stanislaus,200,,"November 19, 2026, 4:28 p.m.",100% (61 of 61) precincts reporting,,,68f8feba5f8525a6,True
