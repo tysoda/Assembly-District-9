@@ -1,0 +1,44 @@
+[
+  {
+    "raceTitle": "State Assembly District 9 - Calaveras County Results",
+    "Reporting": "100% (6 of 6) precincts reporting",
+    "ReportingTime": "November 24, 2026, 12:55 p.m.",
+    "candidates": [
+      {
+        "Name": "Matthew Adams",
+        "Party": "Dem",
+        "Votes": "1,903",
+        "Percent": "27.8",
+        "incumbent": false
+      },
+      {
+        "Name": "Heath Flora",
+        "Party": "Rep",
+        "Votes": "4,934",
+        "Percent": "72.2",
+        "incumbent": true
+      }
+    ]
+  },
+  {
+    "raceTitle": "State Assembly District 9 - Districtwide Results",
+    "Reporting": "100% (303 of 303) precincts reporting",
+    "ReportingTime": "November 27, 2026, 12:37 p.m.",
+    "candidates": [
+      {
+        "Name": "Matthew Adams",
+        "Party": "Dem",
+        "Votes": "72,680",
+        "Percent": "43.8",
+        "incumbent": false
+      },
+      {
+        "Name": "Heath Flora",
+        "Party": "Rep",
+        "Votes": "93,396",
+        "Percent": "56.2",
+        "incumbent": true
+      }
+    ]
+  }
+]
